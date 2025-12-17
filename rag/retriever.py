@@ -3,7 +3,7 @@ from typing import List, Dict, Literal
 
 from langchain_chroma import Chroma
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
-from langchain.schema import Document
+from langchain_core.documents import Document
 from pydantic import BaseModel, ValidationError, conint
 from dotenv import load_dotenv
 
