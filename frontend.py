@@ -7,6 +7,10 @@ import streamlit as st
 import requests
 from typing import List, Dict, Optional
 import time
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Page configuration
 st.set_page_config(
@@ -88,7 +92,7 @@ st.markdown("""
 # API Configuration
 API_BASE_URL = st.sidebar.text_input(
     "API Base URL",
-    value="http://localhost:8000",
+    value=os.getenv("API_BASE_URL"),
     help="Enter the base URL of your FastAPI server"
 )
 
