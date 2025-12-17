@@ -101,38 +101,10 @@ This represents more than an order‑of‑magnitude improvement over the baselin
 
 ## Technical Decisions
 
-### Why LLM-Based Domain Detection?
-
-Traditional keyword matching or rule-based approaches fail to capture nuanced query requirements. For example, "leadership role" implicitly requires both behavioral (Personality & Behaviour) and competency assessments. LLMs excel at this implicit understanding.
-
-### Why Balanced Selection Over Pure Ranking?
-
-Pure similarity ranking often returns homogeneous results. Balanced selection ensures diversity while preserving relevance by maintaining similarity order within each domain.
-
-### Why Two-Stage LLM Usage?
-
-1. **Domain Detection**: Understands "what types of assessments are needed"
-2. **Scoring**: Understands "which specific assessments are most relevant"
-
-This separation allows each LLM call to focus on a specific task, improving both accuracy and efficiency.
-
-### URL Normalization for Evaluation
-
-Implemented robust URL normalization to handle format differences:
-- Removes `/solutions/` path variations
-- Normalizes http/https
-- Removes query parameters and trailing slashes
-
-This ensures fair evaluation when comparing ground truth URLs with predicted URLs.
-
-## Evaluation Methodology
-
-Implemented comprehensive evaluation using Mean Recall@K:
-- **Retrieval Stage**: Measures how many relevant assessments appear in top 20 retrieved
-- **Final Stage**: Measures how many relevant assessments appear in top 7 recommendations
-- Evaluates at multiple K values (5, 7, 10) to understand performance across different cutoffs
-
-The evaluation pipeline handles variable numbers of relevant URLs per query, correctly computing Recall@K as (hits in top K) / (total relevant URLs).
+- **LLM-based domain detection instead of rules:** Handles nuanced queries (e.g. “leadership role”) better than brittle keyword patterns by mapping free‑form text into the 8 SHL domain families.
+- **Domain-aware retrieval, not just ranking:** Uses `is_type_*` flags during retrieval so the candidate pool already covers the right mix of test types (e.g. K + P), then only lightly rebalances.
+- **Two-stage LLM usage:** One call focuses on *what types* of assessments are needed (domains), the second on *which specific* assessments to prioritize (scoring), which keeps prompts simple and each stage debuggable.
+- **URL normalization in evaluation:** Normalizes scheme, path, and `/solutions/` variants so Recall@K fairly matches ground‑truth URLs regardless of minor formatting differences.
 
 ## Conclusion
 
